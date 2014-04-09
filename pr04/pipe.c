@@ -9,11 +9,10 @@ void toUpperCase(char*);
 
 int main(int argc, char* argv[]) {
 	if (argc < 2) {
-		printf("Es wird ein Argument erwartet.\n");
-		return EXIT_SUCCESS;
+		printf("Welcher Text soll den übertragen werden?\n(Argument erwartet)\n");
+		return EXIT_FAILURE;
 	}
-	int n /*Number of chars read*/, A[2] /*Parent -> Child*/,
-			B[2]/*Child -> Parent*/, err;
+	int n /*Number of chars read*/, A[2] , B[2], err;
 	pid_t pid;
 	char line[MAXLINE];	//Buffer
 
@@ -36,22 +35,31 @@ int main(int argc, char* argv[]) {
 	} else if (pid > 0) { /* parent */
 		close(A[0]);			//Lesezugriff auf Pipe A schließen
 		close(B[1]);			//Schreibzugriff auf Pipe B schließen
+
 		char *argument = argv[1];
-		write(A[1], argument, strlen(argument)); //Text an das Kind senden
+
+		write(A[1], argument, strlen(argument)+1); //Text an das Kind senden
 		close(A[1]);			//Schreibzugriff auf Pipe A schließen
+
 		n = read(B[0], line, MAXLINE); //Aus Pipe B lesen
+
 		close(B[0]);			//Lesezugriff auf Pipe B schließen
 		write(STDOUT_FILENO, line, n); //Gelesenen Text auf die Konsole schreiben
 		printf("\n");
+
 		waitpid(pid, NULL, 0);	//Warte auf Beendigung des Kindes
 	} else {/* child */
 		close(A[1]);			//Schreibzugriff auf Pipe A schließen
 		close(B[0]);			//Lesezuggriff auf Pipe B schließen
+
 		n = read(A[0], line, MAXLINE);	//Aus Pipe A lesen
 		close(A[0]);			//Lesezugriff auf Pipe A schließen
+
 		sleep(1);				//Einen kurzen Moment warten
+
 		toUpperCase(line);		//Input in Großbuchstabe umwandeln
 		write(B[1], line, n);	//Gelesenen Text zurück an den Parent senden
+
 		close(B[1]);			//Schreibezugriff auf Pipe B schließen
 	}
 	return EXIT_SUCCESS;

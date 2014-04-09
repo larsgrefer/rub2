@@ -13,7 +13,7 @@ int main(int argc, char * argv[]) {
 		printf("fd[0]=%d\n", fd[0]);
 		printf("fd[1]=%d\n", fd[1]);
 
-		char *text = "Irgendein Text\n"; //Text, der in die Pipe geschrieben wird
+		char *text = "Ja Hallo erstmal, ...\n"; //Text, der in die Pipe geschrieben wird
 
 		int write_ret = write(fd[1], text, strlen(text)); //Text in die Pipe schreiben
 		if (write_ret == -1) {
