@@ -1,3 +1,0 @@
-#!/bin/bash
-gcc ./Uebung3.c -o Uebung3
-./Uebung3 $*
