@@ -26,12 +26,10 @@ void arrayToUpper(char*, int);
 
 int main(int argc, char* argv[]){
 
-  printf("Erstelle FIFO A\n");
+  printf("Erstelle FIFOs und Signalhandler\n");
   createfifo(fifo_A); // FIFO A erstellen
-  printf("Erstelle FIFO B\n");
   createfifo(fifo_B); // FIFO B erstellen
-  
-  printf("Registriere Signalhandler\n");
+
   signal(SIGINT, sighandler); // Signal-handler, um im Fall der Beendigung
   signal(SIGTERM, sighandler); //  die FIFO's löschen zu können
   
@@ -40,14 +38,13 @@ int main(int argc, char* argv[]){
   
   while(TRUE){
     
-    printf("Warte auf Anfrage ...\n");
+    printf("FIFOs öffnen\n");
     fd_A = openfile(fifo_A, O_RDONLY); // FIFO A öffnen
-    printf("Eingehende Anfrage\n");
     fd_B = openfile(fifo_B, O_WRONLY); // FIFO B öffnen    
     
     streamtoupper(fd_A, fd_B); // FIFO A lesen, umwandeln und in FIFO B schreiben
     
-    printf("Schließe FIFO's\n");
+    printf("FIFOs schließen\n");
     if(closefile(fd_A) || closefile(fd_B)){ // FIFO's schließen und bei Fehler beenden
      exit(-1);
     }
@@ -60,7 +57,7 @@ int main(int argc, char* argv[]){
 
 
 void streamtoupper(const int fd_in, const int fd_out){
-  printf("Konvertiere ...\n");
+  printf("Umwandeln...\n");
   
   ssize_t num, num2;
   char buf[BUFFERSIZE];

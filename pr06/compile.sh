@@ -1,4 +1,4 @@
 #!/bin/bash
 
-./compile_upperservice.sh
-./compile_pipe.sh
+gcc server.c -o server
+gcc client.c -o client
