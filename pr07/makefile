@@ -11,3 +11,6 @@ delete:
 
 pv.o: 
 	gcc -c pv.c
+
+clean:
+	rm erzeuger sender delete pv.o
