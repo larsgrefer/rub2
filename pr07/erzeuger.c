@@ -23,6 +23,7 @@ int main(void)
 
 	/******************************** initialisieren *********************************/
 
+	fprintf(stderr, "Start shared memory\n");
 	/* Anlegen des Shared Memories fuer Anforderungen */
 	if((shm_anfordid = shmget(SHM_READKEY, MAX_LAENGE, IPC_CREAT | IPC_EXCL | SHM_R | SHM_W)) == -1){
 		fprintf(stderr,"Error(%d): Anforderungs shared memory konnte nicht angelegt werden\n", shm_anfordid);
@@ -71,9 +72,12 @@ int main(void)
                 exit(-1);
         }
 
+	fprintf(stderr, "Semaphore gestartet\n");
+
 	/****************************** Sammeln und Rechnen ************************************/
 
-	while(1)
+	int run = 1;
+	while(run)
 	{
 		neues_wort=0;
 
@@ -93,13 +97,17 @@ int main(void)
 			neues_wort = 1;
 			shm_anford->ungelesen = 0;
 		}
+//		fprintf(stderr, "Text empfangen: %s\n", shm_anford->text);
 
 		/* Abbruchkriterium client = 1000 SHM_MAXSAETZE aus sm.h */
-		if(client == SHM_MAXSAETZE){ 
+//		fprintf(stderr, "Client: %d\n", shm_anford->client_nr);
+		if(shm_anford->client_nr == SHM_MAXSAETZE){ 
+			fprintf(stderr, "TERMINATE\n");
 			sleep(1);
+			run = 0;
 			break;
 		}
-		
+
 		/* Semaphor fuer Anforderungen freigeben */
 		semaphor.sem_op = 1;
                 semaphor.sem_flg = SEM_UNDO;
@@ -125,10 +133,14 @@ int main(void)
                         	exit(-1);
                 	}
 
+//			fprintf(stderr, "Sende antwort: %s\n", shm_antwort->ergebnis);
+
 			shm_antwort->ungelesen = 1;
 			strcpy(shm_antwort->ergebnis, buf);
 			shm_antwort->client_nr = shm_anford->client_nr;
-	
+
+			fprintf(stderr, "Antwort: %s\n", shm_antwort->ergebnis);
+
 			/* Semaphor fuer Antworten freigeben */
 			semaphor.sem_op = 1;
                 	semaphor.sem_flg = SEM_UNDO;
