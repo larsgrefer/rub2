@@ -93,16 +93,15 @@ int main(void)
 
 		if(shm_anford->ungelesen){
 			strcpy(buf, shm_anford->text);
-			client = client + 1;
+			client = client;
 			neues_wort = 1;
 			shm_anford->ungelesen = 0;
+			fprintf(stderr, "Empfangener Text: %s\n", shm_anford->text);
+			fprintf(stderr, "von Client-ID: %d\n", shm_anford->client_nr);
 		}
-//		fprintf(stderr, "Text empfangen: %s\n", shm_anford->text);
 
 		/* Abbruchkriterium client = 1000 SHM_MAXSAETZE aus sm.h */
-//		fprintf(stderr, "Client: %d\n", shm_anford->client_nr);
 		if(shm_anford->client_nr == SHM_MAXSAETZE){ 
-			fprintf(stderr, "TERMINATE\n");
 			sleep(1);
 			run = 0;
 			break;
@@ -133,13 +132,11 @@ int main(void)
                         	exit(-1);
                 	}
 
-//			fprintf(stderr, "Sende antwort: %s\n", shm_antwort->ergebnis);
-
 			shm_antwort->ungelesen = 1;
 			strcpy(shm_antwort->ergebnis, buf);
 			shm_antwort->client_nr = shm_anford->client_nr;
 
-			fprintf(stderr, "Antwort: %s\n", shm_antwort->ergebnis);
+			fprintf(stderr, "Gesendete Antwort: %s\n", shm_antwort->ergebnis);
 
 			/* Semaphor fuer Antworten freigeben */
 			semaphor.sem_op = 1;

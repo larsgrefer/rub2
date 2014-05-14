@@ -122,7 +122,7 @@ int main(int argc,char* argv[])
                 }
 
 		if((shm_antwort->ungelesen) && (shm_antwort->client_nr == client)){
-
+			printf("ID: %d\n", shm_antwort->client_nr);
 			printf("Rückmeldung: %s\n", shm_antwort->ergebnis);
 			shm_antwort->ungelesen = 0;
 
