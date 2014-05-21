@@ -32,12 +32,20 @@ int main(int argc, char *argv[])
 	/* Setzen des Sempahors auf 1 */
 	sem_set(sem_anfordid, 1);
 
+
+	int anz_res_old = 0;
 	/* Beginn Serverschleife */
 	while(1){
 		/* Abfragen wieviel Ressourcen frei sind, falls 0 Schleife verlassen */
 		int anz_ressourcen = sem_get(sem_anfordid);
-		printf("sem_get(sem_anfordid) = %d\n", anz_ressourcen);
-
+		if(anz_res_old == anz_ressourcen) {
+			printf(".");
+			fflush(stdout);
+		}
+		else {
+			printf("\nSem-Wert(Res.-Anzahl): %d", anz_ressourcen);
+			anz_res_old = anz_ressourcen;
+		}
 		if(anz_ressourcen == 0){
 			break;
 		}
