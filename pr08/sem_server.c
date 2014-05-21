@@ -47,6 +47,7 @@ int main(int argc, char *argv[])
 			anz_res_old = anz_ressourcen;
 		}
 		if(anz_ressourcen == 0){
+			printf("\n");
 			break;
 		}
 		
