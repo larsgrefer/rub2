@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
 		}
 		else {
 			printf("\nSem-Wert(Res.-Anzahl): %d", anz_ressourcen);
+			fflush(stdout);
 			anz_res_old = anz_ressourcen;
 		}
 		if(anz_ressourcen == 0){
