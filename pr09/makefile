@@ -2,8 +2,7 @@ all: build
 
 build:
 	mkdir -p ./target
-	gcc thread_simple.c -o ./target/Thread -lpthread
+	gcc thread_simple.c -o ./Thread -lpthread
 
 clean:
-	rm ./target/Thread
-	rm ./target
+	rm ./Thread

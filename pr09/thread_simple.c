@@ -1,6 +1,7 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 void *schlafe(void *arg);
 void sleep_thread_new(pthread_t *thread, int sleeptime);
@@ -15,10 +16,10 @@ int main (int argc, char *argv[])
 
 	/* Lese Schlafzeiten ein */
 	if(number_of_threads < 1){
-		printf("Error: Es wird mindestens eine Schlafzeit erwartet.\n");
+		printf("Bitte mindestens eine Zeit eingeben.\n\tUsage: Thread time1 [time...]\n");
 		exit(-1);
 	}else{
-		printf("Versuche %d Threads zu erstellen.\n\n", number_of_threads);
+		printf("Erstelle %d Threads\n\n", number_of_threads);
 	}
 
 	for(i = 0; i < number_of_threads; i++){
@@ -41,9 +42,9 @@ int main (int argc, char *argv[])
 }
 
 void sleep_thread_new(pthread_t *thread, int sleeptime){
-
-	if(pthread_create(thread, NULL, schlafe, (int*)sleeptime) != 0){
-		fprintf(stderr, "Error: Konnte Thread nicht erzeugen\n");
+	int err = pthread_create(thread, NULL, schlafe, (int*)sleeptime);
+	if(err != 0){
+		fprintf(stderr, "Fehler beim erstellen von Thread: Fehler(%d)\n", err);
 		exit(-1);
 	}
 
@@ -53,11 +54,22 @@ void *schlafe(void *arg){
 
 	int sleeptime = (int)arg;
 
-	printf("Thread(%d) wird gestartet\n", sleeptime);
+	printf("Thread wird gestartet, warte %d Millisekunden\n", sleeptime);
 
-	sleep(sleeptime);
+	int time = 0;
+	while(time < sleeptime)
+	{
+		time++;
+		int err = nanosleep((struct timespec[]){{0, 1000000}}, NULL);
+		if(err < 0)
+		{
+			printf("Fehler beim schlafen \n");
+			exit(-1);
+		}
+	}
+	//sleep(sleeptime);
 
-	printf("Thread(%d) wird beendet\n", sleeptime);
+	printf("Fertig mit warten von %d Milliekunden\n", sleeptime);
 
 	return NULL;
 }
