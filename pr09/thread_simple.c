@@ -3,14 +3,14 @@
 #include <stdlib.h>
 
 void *schlafe(void *arg);
-void sleep_thread_new(pthread_t *thread, int sleeptime);
+void sleep_thread_new(pthread_t *thread, int *sleeptime);
 
 int main (int argc, char *argv[])
 {
 	int number_of_threads = argc -1;
 	int i;
 
-	int sleeptime[number_of_threads];
+	int *sleeptime = malloc(sizeof(int) * 3);
 	pthread_t thread[number_of_threads];
 
 	/* Lese Schlafzeiten ein */
@@ -28,7 +28,7 @@ int main (int argc, char *argv[])
 
 	/* Starte die Threads */
 	for(i = 0; i < number_of_threads; i++){
-		sleep_thread_new(&thread[i], sleeptime[i]);
+		sleep_thread_new(&thread[i], &sleeptime[i]);
 	}
 
 
@@ -37,12 +37,13 @@ int main (int argc, char *argv[])
 		pthread_join(thread[i], NULL);
 	}
 
+	free(sleeptime);
 	exit(0);
 }
 
-void sleep_thread_new(pthread_t *thread, int sleeptime){
+void sleep_thread_new(pthread_t *thread, int *sleeptime){
 
-	if(pthread_create(thread, NULL, schlafe, (int*)sleeptime) != 0){
+	if(pthread_create(thread, NULL, schlafe, sleeptime) != 0){
 		fprintf(stderr, "Error: Konnte Thread nicht erzeugen\n");
 		exit(-1);
 	}
@@ -51,7 +52,7 @@ void sleep_thread_new(pthread_t *thread, int sleeptime){
 
 void *schlafe(void *arg){
 
-	int sleeptime = (int)arg;
+	int sleeptime = *((int*)arg);
 
 	printf("Thread(%d) wird gestartet\n", sleeptime);
 
