@@ -1,8 +1,7 @@
 all: build
 
 build:
-	mkdir -p ./target
-	gcc thread_simple.c -o ./Thread -lpthread
+	gcc thread_simple.c -o ./thread -lpthread
 
 clean:
-	rm ./Thread
+	rm ./thread
