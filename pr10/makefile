@@ -1,9 +1,7 @@
 all: clean build
 
 build:
-	mkdir -p target
-	gcc philosoph.c -lpthread -o target/philosoph
+	gcc philosoph.c -lpthread -o philosoph
 
 clean:
-	rm -f target/philosoph
-	rm -fd target
+	rm philosoph
