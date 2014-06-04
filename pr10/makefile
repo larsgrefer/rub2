@@ -1,4 +1,4 @@
-all: clean build
+all: build
 
 build:
 	gcc philosoph.c -lpthread -o philosoph
